@@ -1158,22 +1158,6 @@ const dashboardHtml = `<!DOCTYPE html>
             </div>
 
             <nav class="nav-section">
-                <div class="nav-label">Menu</div>
-                <div class="nav-item active">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path></svg>
-                    Dashboard
-                </div>
-                <div class="nav-item">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                    All Feedback
-                </div>
-                <div class="nav-item">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    Insights
-                </div>
-            </nav>
-
-            <nav class="nav-section">
                 <div class="nav-label">Filter by Source</div>
                 <div class="nav-item" id="nav-all" onclick="filterBySource('')">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -1258,23 +1242,6 @@ const dashboardHtml = `<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- AI Executive Summary - Full Width, Prominent -->
-            <div class="card" style="margin-bottom:20px;border:1px solid rgba(168,85,247,0.3);background:linear-gradient(135deg, rgba(168,85,247,0.05) 0%, rgba(99,102,241,0.05) 100%);">
-                <div class="card-header" style="border-bottom:1px solid rgba(168,85,247,0.2);">
-                    <span class="card-title">
-                        <span class="card-title-icon" style="background:var(--gradient);"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:white;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>
-                        AI Executive Summary
-                    </span>
-                    <span style="font-size:12px;color:var(--text-muted);">Powered by Cloudflare Workers AI (Llama 3.1 8B)</span>
-                </div>
-                <div class="card-body" id="ai-summary">
-                    <div style="display:flex;align-items:center;gap:12px;color:var(--text-muted);">
-                        <svg class="animate-spin" fill="none" viewBox="0 0 24 24" style="width:20px;height:20px;flex-shrink:0;"><circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                        <span>Analyzing feedback with AI...</span>
-                    </div>
-                </div>
-            </div>
-
             <!-- Charts + Themes Row -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px;">
                 <div class="card">
@@ -1315,12 +1282,29 @@ const dashboardHtml = `<!DOCTYPE html>
                 </div>
             </div>
 
+            <!-- AI Executive Summary -->
+            <div class="card" style="margin-bottom:20px;border:1px solid rgba(168,85,247,0.3);background:linear-gradient(135deg, rgba(168,85,247,0.05) 0%, rgba(99,102,241,0.05) 100%);">
+                <div class="card-header" style="border-bottom:1px solid rgba(168,85,247,0.2);">
+                    <span class="card-title">
+                        <span class="card-title-icon" style="background:var(--gradient);"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:white;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>
+                        AI Executive Summary
+                    </span>
+                    <span style="font-size:12px;color:var(--text-muted);">Powered by Cloudflare Workers AI (Llama 3.1 8B)</span>
+                </div>
+                <div class="card-body" id="ai-summary">
+                    <div style="display:flex;align-items:center;gap:12px;color:var(--text-muted);">
+                        <svg class="animate-spin" fill="none" viewBox="0 0 24 24" style="width:20px;height:20px;flex-shrink:0;"><circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                        <span>Analyzing feedback with AI...</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Feedback List -->
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">
                         <span class="card-title-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></span>
-                        Recent Feedback
+                        All Feedback
                     </span>
                 </div>
                 <div class="filters">
