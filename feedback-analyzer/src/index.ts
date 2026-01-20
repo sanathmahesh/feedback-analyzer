@@ -1166,7 +1166,6 @@ const dashboardHtml = `<!DOCTYPE html>
                 <div class="nav-item">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                     All Feedback
-                    <span class="nav-count" id="nav-total">0</span>
                 </div>
                 <div class="nav-item">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -1175,38 +1174,40 @@ const dashboardHtml = `<!DOCTYPE html>
             </nav>
 
             <nav class="nav-section">
-                <div class="nav-label">Sources</div>
-                <div class="nav-item" onclick="filterBySource('discord')">
+                <div class="nav-label">Filter by Source</div>
+                <div class="nav-item" id="nav-all" onclick="filterBySource('')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    All Sources
+                    <span class="nav-count" id="nav-total">0</span>
+                </div>
+                <div class="nav-item" id="nav-discord" onclick="filterBySource('discord')">
                     <span class="source-dot discord"></span> Discord
                     <span class="nav-count" id="count-discord">-</span>
                 </div>
-                <div class="nav-item" onclick="filterBySource('github')">
+                <div class="nav-item" id="nav-github" onclick="filterBySource('github')">
                     <span class="source-dot github"></span> GitHub
                     <span class="nav-count" id="count-github">-</span>
                 </div>
-                <div class="nav-item" onclick="filterBySource('support')">
+                <div class="nav-item" id="nav-support" onclick="filterBySource('support')">
                     <span class="source-dot support"></span> Support
                     <span class="nav-count" id="count-support">-</span>
                 </div>
-                <div class="nav-item" onclick="filterBySource('twitter')">
+                <div class="nav-item" id="nav-twitter" onclick="filterBySource('twitter')">
                     <span class="source-dot twitter"></span> Twitter
                     <span class="nav-count" id="count-twitter">-</span>
                 </div>
-                <div class="nav-item" onclick="filterBySource('email')">
+                <div class="nav-item" id="nav-email" onclick="filterBySource('email')">
                     <span class="source-dot email"></span> Email
                     <span class="nav-count" id="count-email">-</span>
                 </div>
-                <div class="nav-item" onclick="filterBySource('forum')">
+                <div class="nav-item" id="nav-forum" onclick="filterBySource('forum')">
                     <span class="source-dot forum"></span> Forum
                     <span class="nav-count" id="count-forum">-</span>
                 </div>
             </nav>
 
-            <div class="sidebar-footer">
-                <button onclick="seedData()" class="btn btn-secondary" style="width:100%;justify-content:center;" id="seed-btn">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                    <span id="seed-text">Load Demo Data</span>
-                </button>
+            <div class="sidebar-footer" style="font-size:11px;color:var(--text-muted);text-align:center;">
+                Powered by Cloudflare Workers AI
             </div>
         </aside>
 
@@ -1218,13 +1219,9 @@ const dashboardHtml = `<!DOCTYPE html>
                     <p class="page-desc">AI-powered analysis across all customer channels</p>
                 </div>
                 <div class="header-actions">
-                    <button onclick="refreshData()" class="btn btn-ghost">
+                    <button onclick="refreshAll()" class="btn btn-secondary">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                        Refresh
-                    </button>
-                    <button onclick="generateSummary()" class="btn btn-primary" id="summary-btn">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        Generate AI Insights
+                        Refresh All
                     </button>
                 </div>
             </header>
@@ -1261,34 +1258,47 @@ const dashboardHtml = `<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- Charts Row -->
-            <div class="grid-2">
+            <!-- AI Executive Summary - Full Width, Prominent -->
+            <div class="card" style="margin-bottom:20px;border:1px solid rgba(168,85,247,0.3);background:linear-gradient(135deg, rgba(168,85,247,0.05) 0%, rgba(99,102,241,0.05) 100%);">
+                <div class="card-header" style="border-bottom:1px solid rgba(168,85,247,0.2);">
+                    <span class="card-title">
+                        <span class="card-title-icon" style="background:var(--gradient);"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:white;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>
+                        AI Executive Summary
+                    </span>
+                    <span style="font-size:12px;color:var(--text-muted);">Powered by Cloudflare Workers AI (Llama 3.1 8B)</span>
+                </div>
+                <div class="card-body" id="ai-summary">
+                    <div style="display:flex;align-items:center;gap:12px;color:var(--text-muted);">
+                        <svg class="animate-spin" fill="none" viewBox="0 0 24 24" style="width:20px;height:20px;flex-shrink:0;"><circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                        <span>Analyzing feedback with AI...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts + Themes Row -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px;">
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">
                             <span class="card-title-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg></span>
-                            Feedback by Source
+                            By Source
                         </span>
                     </div>
                     <div class="card-body">
-                        <div style="height:240px;"><canvas id="sourceChart"></canvas></div>
+                        <div style="height:200px;"><canvas id="sourceChart"></canvas></div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">
                             <span class="card-title-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></span>
-                            Sentiment Distribution
+                            Sentiment
                         </span>
                     </div>
                     <div class="card-body">
-                        <div style="height:240px;"><canvas id="sentimentChart"></canvas></div>
+                        <div style="height:200px;"><canvas id="sentimentChart"></canvas></div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Themes + AI Summary -->
-            <div class="grid-3">
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">
@@ -1297,32 +1307,10 @@ const dashboardHtml = `<!DOCTYPE html>
                         </span>
                     </div>
                     <div class="card-body" id="themes-list">
-                        <div class="skeleton" style="height:20px;width:100%;margin-bottom:20px;"></div>
-                        <div class="skeleton" style="height:20px;width:85%;margin-bottom:20px;"></div>
-                        <div class="skeleton" style="height:20px;width:70%;margin-bottom:20px;"></div>
-                        <div class="skeleton" style="height:20px;width:55%;"></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">
-                            <span class="card-title-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>
-                            AI Executive Summary
-                        </span>
-                    </div>
-                    <div class="card-body">
-                        <div class="ai-summary" id="ai-summary">
-                            <div class="ai-summary-header">
-                                <div class="ai-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg></div>
-                                <div>
-                                    <div class="ai-summary-title">Powered by Workers AI</div>
-                                    <div class="ai-summary-subtitle">Llama 3.1 8B</div>
-                                </div>
-                            </div>
-                            <div class="ai-summary-text">
-                                <p style="color:var(--text-muted)">Click "Generate AI Insights" to analyze your feedback data and receive actionable recommendations.</p>
-                            </div>
-                        </div>
+                        <div class="skeleton" style="height:16px;width:100%;margin-bottom:14px;"></div>
+                        <div class="skeleton" style="height:16px;width:85%;margin-bottom:14px;"></div>
+                        <div class="skeleton" style="height:16px;width:70%;margin-bottom:14px;"></div>
+                        <div class="skeleton" style="height:16px;width:55%;"></div>
                     </div>
                 </div>
             </div>
@@ -1365,7 +1353,7 @@ const dashboardHtml = `<!DOCTYPE html>
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
                         </div>
                         <h3>No feedback yet</h3>
-                        <p>Click "Load Demo Data" in the sidebar to populate sample feedback and see the dashboard in action.</p>
+                        <p>Feedback from Discord, GitHub, Support, Twitter, and other channels will appear here.</p>
                     </div>
                 </div>
             </div>
@@ -1380,6 +1368,7 @@ const dashboardHtml = `<!DOCTYPE html>
 
     <script>
         let sourceChart, sentimentChart;
+        let currentSource = '';
 
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
@@ -1389,36 +1378,26 @@ const dashboardHtml = `<!DOCTYPE html>
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        async function seedData() {
-            const btn = document.getElementById('seed-text');
-            btn.textContent = 'Analyzing...';
-            document.getElementById('seed-btn').disabled = true;
-
-            try {
-                const res = await fetch('/api/seed', { method: 'POST' });
-                const data = await res.json();
-                if (data.error) {
-                    showToast('Error: ' + data.error, 'error');
-                } else {
-                    showToast('Loaded ' + data.imported + ' items with AI analysis');
-                    btn.textContent = 'Done!';
-                    setTimeout(() => { btn.textContent = 'Reload Data'; }, 1500);
-                    refreshData();
-                }
-            } catch (e) {
-                showToast('Error: ' + e.message, 'error');
-            }
-
-            document.getElementById('seed-btn').disabled = false;
-            if (btn.textContent === 'Analyzing...') btn.textContent = 'Load Demo Data';
-        }
-
         async function refreshData() {
             await Promise.all([loadStats(), loadFeedback()]);
         }
 
+        async function refreshAll() {
+            await Promise.all([loadStats(), loadFeedback(), generateSummary()]);
+            showToast('Dashboard refreshed');
+        }
+
         function filterBySource(source) {
+            currentSource = source;
             document.getElementById('filter-source').value = source;
+
+            // Update sidebar active state
+            document.querySelectorAll('.nav-section .nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const activeNav = document.getElementById('nav-' + (source || 'all'));
+            if (activeNav) activeNav.classList.add('active');
+
             loadFeedback();
         }
 
@@ -1449,7 +1428,7 @@ const dashboardHtml = `<!DOCTYPE html>
                         return '<div class="theme-item"><span class="theme-name">' + t.name + '</span><div class="theme-bar"><div class="theme-fill" style="width:' + pct + '%"></div></div><span class="theme-count">' + t.count + '</span></div>';
                     }).join('');
                 } else {
-                    themesList.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-muted)"><p>No themes detected yet.</p><p style="font-size:12px;margin-top:8px">Load demo data to see trending topics.</p></div>';
+                    themesList.innerHTML = '<div style="text-align:center;padding:30px 10px;color:var(--text-muted);font-size:13px;">No themes detected yet.</div>';
                 }
 
                 updateCharts(stats);
@@ -1550,7 +1529,7 @@ const dashboardHtml = `<!DOCTYPE html>
                         '</div>'
                     ).join('');
                 } else {
-                    list.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg></div><h3>No feedback found</h3><p>Try adjusting your filters or load demo data.</p></div>';
+                    list.innerHTML = '<div class="empty-state"><div class="empty-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg></div><h3>No feedback found</h3><p>Try adjusting your filters or check back later.</p></div>';
                 }
             } catch (e) {
                 console.error('Error loading feedback:', e);
@@ -1558,34 +1537,36 @@ const dashboardHtml = `<!DOCTYPE html>
         }
 
         async function generateSummary() {
-            const btn = document.getElementById('summary-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<svg class="animate-spin" fill="none" viewBox="0 0 24 24" style="width:16px;height:16px"><circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Analyzing with AI...';
-
             const summaryDiv = document.getElementById('ai-summary');
+
+            // Show loading state
+            summaryDiv.innerHTML = '<div style="display:flex;align-items:center;gap:12px;color:var(--text-muted);"><svg class="animate-spin" fill="none" viewBox="0 0 24 24" style="width:20px;height:20px;flex-shrink:0;"><circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity:0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg><span>Analyzing feedback with AI...</span></div>';
 
             try {
                 const res = await fetch('/api/summary');
                 const data = await res.json();
 
-                summaryDiv.innerHTML =
-                    '<div class="ai-summary-header">' +
-                    '<div class="ai-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg></div>' +
-                    '<div><div class="ai-summary-title">Executive Summary</div><div class="ai-summary-subtitle">Based on ' + (data.feedbackCount || 0) + ' feedback items</div></div>' +
-                    '</div>' +
-                    '<div class="ai-summary-text">' + (data.summary || 'No summary available.').split('\\n').map(p => '<p>' + p + '</p>').join('') + '</div>';
-
-                showToast('AI analysis complete');
+                if (data.summary && data.summary !== 'No feedback available yet.') {
+                    const formattedSummary = data.summary.split('\\n').filter(p => p.trim()).map(p => '<p style="margin-bottom:12px;line-height:1.8;">' + p + '</p>').join('');
+                    summaryDiv.innerHTML = '<div style="color:var(--text-secondary);font-size:14px;">' + formattedSummary + '</div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);">Based on ' + (data.feedbackCount || 0) + ' feedback items</div>';
+                } else {
+                    summaryDiv.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">No feedback data available. Add some feedback to see AI-generated insights.</div>';
+                }
             } catch (e) {
-                summaryDiv.innerHTML = '<div style="color:var(--negative);padding:20px;text-align:center">Error generating summary. Please try again.</div>';
+                summaryDiv.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">Unable to generate summary. Click "Refresh All" to try again.</div>';
             }
-
-            btn.disabled = false;
-            btn.innerHTML = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> Generate AI Insights';
         }
 
-        // Initial load
-        refreshData();
+        // Initial load - auto-generate summary
+        async function init() {
+            // Set "All Sources" as active by default
+            document.getElementById('nav-all').classList.add('active');
+
+            // Load everything in parallel
+            await Promise.all([loadStats(), loadFeedback(), generateSummary()]);
+        }
+
+        init();
     </script>
 </body>
 </html>`;
